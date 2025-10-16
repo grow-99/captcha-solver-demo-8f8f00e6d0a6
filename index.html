@@ -1,42 +1,67 @@
-<!doctype html>
-<html>
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Captcha Solver - captcha-solver-demo</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Captcha Solver Demo</title>
   <style>
-    body{font-family:Arial,Helvetica,sans-serif;padding:16px}
-    #captcha-img{max-width:100%;height:auto;border:1px solid #ddd}
-    #captcha-solution{margin-top:12px;padding:8px;border-radius:4px;background:#f4f4f4}
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #f8f9fa;
+      margin-top: 60px;
+    }
+    h1 {
+      color: #2c3e50;
+    }
+    img {
+      max-width: 300px;
+      border: 2px solid #ccc;
+      border-radius: 10px;
+      padding: 8px;
+      margin: 15px 0;
+      background: white;
+    }
+    #result {
+      font-weight: bold;
+      color: #333;
+      margin-top: 10px;
+    }
   </style>
 </head>
 <body>
   <h1>Captcha Solver</h1>
-  <p>Task: captcha-solver-demo</p>
-  <img id="captcha-img" alt="captcha image" src="">
-  <div id="captcha-solution">(not solved yet)</div>
+  <h3>Task: captcha-solver-demo</h3>
+
+  <p>Captcha Image:</p>
+  <img id="captcha" alt="Captcha Image" />
+
+  <p id="result">Loading...</p>
 
   <script>
-    function getParam(k){const p=new URLSearchParams(location.search);return p.get(k);}
-    const url = getParam('url') || 'assets/sample.png';
-    const img = document.getElementById('captcha-img');
-    img.src = url || '';
-    function showSolution(s){document.getElementById('captcha-solution').textContent = s;}
-    img.onload = () => {
-      // naive solver: if filename contains 'sample' return 'SAMPLE'
+    // Get URL parameter (?url=...)
+    const params = new URLSearchParams(window.location.search);
+    const imageUrl = params.get("url");
+
+    const captchaImg = document.getElementById("captcha");
+    const resultText = document.getElementById("result");
+
+    // If a URL is provided, display the image
+    if (imageUrl) {
+      captchaImg.src = imageUrl;
+
+      // If image fails to load, show an error
+      captchaImg.onerror = () => {
+        resultText.textContent = "IMAGE ERROR (Invalid or blocked URL)";
+      };
+
+      // Simulate solving captcha (for demo only)
       setTimeout(() => {
-        try {
-          const u = new URL(img.src, location.href);
-          const name = u.pathname.split('/').pop() || '';
-          if (name.toLowerCase().includes('sample')) {
-            showSolution('SAMPLE');
-          } else {
-            showSolution('UNAVAILABLE');
-          }
-        } catch(e) {
-          showSolution('UNAVAILABLE');
-        }
-      }, 1000);
-    };
-    img.onerror = () => { showSolution('IMAGE ERROR'); };
+        resultText.textContent = "Solved captcha text: [demo-text]";
+      }, 2000);
+    } else {
+      resultText.textContent = "IMAGE ERROR (No ?url= provided)";
+    }
   </script>
 </body>
 </html>
